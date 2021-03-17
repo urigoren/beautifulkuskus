@@ -4,6 +4,11 @@ id_pattern = re.compile(r'id\s{0,3}=\s{0,3}"([^"]+)"')
 class_pattern = re.compile(r'class\s{0,3}=\s{0,3}"([^"]+)"')
 DataPoint = collections.namedtuple("DataPoint", ("element", "tags", "classes", "ids", "text"))
 
+def normalize_txt(txt):
+    return re.sub("[\n\s]+",' ',str(txt).translate({160: ' '}),flags=re.MULTILINE).strip()
+
+def fuzzy_pattern(txt):
+    return re.compile("[^a-zA-Z0-9]{0,6}".join(['']+re.findall("[a-zA-Z0-9]+", txt)+['']))
 
 def cls_soup(el):
     ret = []
@@ -46,7 +51,7 @@ def generate_dataset(soup):
     for id_ in ids:
         x=soup.find(id=id_)
         try:
-            s=re.sub(r"\s+"," ",x.text.strip().translate({160:' '}), flags=re.MULTILINE)
+            s=normalize_txt(x.text.strip())
             if s in found_strings:
                 continue
             ret.append(DataPoint(x, tag_soup(x), cls_soup(x),ids_soup(x), s))
@@ -56,7 +61,7 @@ def generate_dataset(soup):
     for cls in clss:
         for x in soup.find_all(class_=cls):
             try:
-                s=re.sub(r"\s+"," ",x.text.strip().translate({160:' '}), flags=re.MULTILINE)
+                s=normalize_txt(x.text.strip())
                 if s in found_strings:
                     continue
                 ret.append(DataPoint(x, tag_soup(x), cls_soup(x),ids_soup(x), s))
@@ -77,7 +82,9 @@ class Kuskus:
         return str(self.soup)
     def __repr__(self):
         return repr(self.soup)
-    def prune(self, func):
+    def fuzzy_match_by_text(self, text):
+        return self.soup.findAll(text=fuzzy_pattern(text))
+    def prune_by_func(self, func):
         assert hasattr(func, "__call__")
         for d in self.dataset:
             if func(d):
@@ -96,4 +103,4 @@ if __name__=="__main__":
     def is_boom(x):
         return x.text=="boom"
     soup=Kuskus(html)
-    print(str(soup.prune(is_boom)))
+    print(str(soup.prune_by_func(is_boom)))

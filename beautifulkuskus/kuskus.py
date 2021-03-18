@@ -84,6 +84,18 @@ class Kuskus:
         return repr(self.soup)
     def fuzzy_match_by_text(self, text):
         return self.soup.findAll(text=fuzzy_pattern(text))
+    def prune(self, **kwargs):
+        for el in self.soup.findAll(**kwargs):
+            el.decompose()
+        return self
+    def prune_scripts(self):
+        for el in self.soup("script"):
+            el.decompose()
+        return self
+    def prune_styles(self):
+        for el in self.soup("style"):
+            el.decompose()
+        return self
     def prune_by_func(self, func):
         assert hasattr(func, "__call__")
         for d in self.dataset:

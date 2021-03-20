@@ -1,5 +1,6 @@
-import re, collections
+import re, collections, os
 from bs4 import BeautifulSoup
+import joblib
 id_pattern = re.compile(r'id\s{0,3}=\s{0,3}"([^"]+)"')
 class_pattern = re.compile(r'class\s{0,3}=\s{0,3}"([^"]+)"')
 DataPoint = collections.namedtuple("DataPoint", ("element", "tags", "classes", "ids", "text"))
@@ -105,6 +106,16 @@ class Kuskus:
                 except:
                     continue
         return self
+    def prune_by_content_model(self, model, threshold=None):
+        if os.path.exists(model):
+            with open(model, 'rb') as f:
+                model = joblib.load(f)
+        assert hasattr(model, "predict")
+        def pfunc(x):
+            if threshold:
+                return model.predict_proba([x])[0,1]>threshold
+            return model.predict([x])[0]
+        return self.prune_by_func(pfunc)
 
 if __name__=="__main__":
     html="""

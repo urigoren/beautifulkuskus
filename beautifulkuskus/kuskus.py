@@ -107,15 +107,15 @@ class Kuskus:
                 except:
                     continue
         return self
-    def prune_by_content_model(self, model, threshold=None):
+    def prune_by_content_model(self, model, threshold=None, preprocess=str):
         if os.path.exists(model):
             with open(model, 'rb') as f:
                 model = joblib.load(f)
         assert hasattr(model, "predict")
         def pfunc(x):
             if threshold:
-                return model.predict_proba([x])[0,1]>threshold
-            return model.predict([x])[0]
+                return model.predict_proba([preprocess(x)])[0,1]>threshold
+            return model.predict([preprocess(x)])[0]
         return self.prune_by_func(pfunc)
 
 if __name__=="__main__":

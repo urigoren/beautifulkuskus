@@ -108,7 +108,7 @@ class Kuskus:
                     continue
         return self
     def prune_by_content_model(self, model, threshold=None, preprocess=str):
-        if os.path.exists(model):
+        if type(model)==str and os.path.exists(model):
             with open(model, 'rb') as f:
                 model = joblib.load(f)
         assert hasattr(model, "predict")

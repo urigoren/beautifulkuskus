@@ -13,7 +13,7 @@ setup(
     ],
     long_description="https://github.com/urigoren/beautifulkuskus/blob/master/README.md",
     long_description_content_type="text/markdown",
-    version="0.17",
+    version="0.18",
     description='Pruning library for beautifulsoup',
     author='Uri Goren',
     author_email='uri@goren.ml',

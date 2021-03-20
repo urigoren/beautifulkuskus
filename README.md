@@ -1,6 +1,6 @@
 # BeautifulKuskus
 
-A trainable boilerplate removal framework, spinned off BeautifulSoup.
+A minimal framework to extract content from HTML with BeautifulSoup and scikit-learn.
 
 ## Basic usage
     from beatifulkuskus import BeautifulKuskus

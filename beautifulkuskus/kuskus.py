@@ -114,8 +114,8 @@ class Kuskus:
         assert hasattr(model, "predict")
         def pfunc(x):
             if threshold:
-                return model.predict_proba([preprocess(x)])[0,1]>threshold
-            return model.predict([preprocess(x)])[0]
+                return model.predict_proba([preprocess(x)])[0,1]<threshold
+            return not model.predict([preprocess(x)])[0]
         return self.prune_by_func(pfunc)
 
 if __name__=="__main__":

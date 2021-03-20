@@ -1,5 +1,6 @@
 import re, collections, os
 from bs4 import BeautifulSoup
+from smart_open import open
 import joblib
 id_pattern = re.compile(r'id\s{0,3}=\s{0,3}"([^"]+)"')
 class_pattern = re.compile(r'class\s{0,3}=\s{0,3}"([^"]+)"')
